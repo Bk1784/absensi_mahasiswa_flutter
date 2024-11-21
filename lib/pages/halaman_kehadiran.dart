@@ -14,16 +14,39 @@ class HalamanKehadiran extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blueAccent,
-        title: const Text(style: TextStyle(color: Colors.white), 'Pencatatan Kehadiran'),
+        title: const Text(
+            style: TextStyle(color: Colors.white), 'Pencatatan Kehadiran'),
       ),
-      body: ListView.separated(
-        itemCount: mahasiswas.length,
-        itemBuilder: (context, index) {
-          return MahasiswaListItem(mahasiswa: mahasiswas[index]);
-        },
-        separatorBuilder: (context, index) {
-          return const Divider();
-        },
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+              itemCount: mahasiswas.length,
+              itemBuilder: (context, index) {
+                final mahasiswa = mahasiswas[index];
+                return Card(
+                  elevation: 3,
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: ListTile(
+                    title: Text(
+                      mahasiswa.name,
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    trailing: Checkbox(
+                      activeColor: Colors.blueAccent,
+                        value: mahasiswa.isPresent,
+                        onChanged: (hasil) {
+                          mahasiswa.isPresent = hasil ?? false;
+                          kehadiranProvider.notifyListeners();
+                        }),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
       ),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -35,10 +58,7 @@ class HalamanKehadiran extends StatelessWidget {
                   ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('Kehadiran disimpan!')));
                 },
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.blueAccent
-                ),
-          
+          style: ElevatedButton.styleFrom(foregroundColor: Colors.blueAccent),
           child: const Text('Simpan Kehadiran'),
         ),
       ),
